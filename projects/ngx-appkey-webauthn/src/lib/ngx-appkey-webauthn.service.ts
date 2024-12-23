@@ -55,7 +55,7 @@ export class NgxAppkeyWebauthnService {
                 return error
             }
             data.handle = data.handle.toLowerCase();
-            return this.apiRequest('POST', '/api/appuser/loginAnonymous', data)
+            return this.apiRequest('POST', 'appuser/loginAnonymous', data)
 
         } catch (error) {
             return error
@@ -100,7 +100,7 @@ export class NgxAppkeyWebauthnService {
 
                 attestation.handle = handle.toLowerCase();
 
-                this.apiRequest('POST', '/api/appuser/loginAnonymousComplete', attestation).then(result => {
+                this.apiRequest('POST', 'appuser/loginAnonymousComplete', attestation).then(result => {
                     if (result.code) reject(result);
                     else {
                         this.user = result;
@@ -137,7 +137,7 @@ export class NgxAppkeyWebauthnService {
                 return error
             }
             data.handle = data.handle.toLowerCase();
-            return this.apiRequest('POST', '/api/appuser/signup', data)
+            return this.apiRequest('POST', 'appuser/signup', data)
 
         } catch (error) {
             return error
@@ -183,7 +183,7 @@ export class NgxAppkeyWebauthnService {
 
                 attestation.handle = handle.toLowerCase();
 
-                this.apiRequest('POST', '/api/appuser/signupConfirm', attestation).then(result => {
+                this.apiRequest('POST', 'appuser/signupConfirm', attestation).then(result => {
                     if (result.code) reject(result);
                     else {
                         this.signupData = result;
@@ -215,7 +215,7 @@ export class NgxAppkeyWebauthnService {
                     return
                 }
 
-                this.apiRequest('POST', '/api/appuser/signupComplete', { code: data.code }).then(result => {
+                this.apiRequest('POST', 'appuser/signupComplete', { code: data.code }).then(result => {
                     if (result.code) reject(result);
                     else {
                         this.user = result;
@@ -246,7 +246,7 @@ export class NgxAppkeyWebauthnService {
                     return
                 }
                 data.handle = data.handle.toLowerCase();
-                this.apiRequest('POST', '/api/appuser/login', data).then(result => {
+                this.apiRequest('POST', 'appuser/login', data).then(result => {
                     if (result.code) reject(result);
                     else {
                         resolve(result);
@@ -297,7 +297,7 @@ export class NgxAppkeyWebauthnService {
 
                 assertion.handle = handle.toLowerCase();
 
-                this.apiRequest('POST', '/api/appuser/loginComplete', assertion).then(result => {
+                this.apiRequest('POST', 'appuser/loginComplete', assertion).then(result => {
                     if (result && result['access-token']) {
                         this.user = result;
                         resolve(result);
@@ -330,7 +330,7 @@ export class NgxAppkeyWebauthnService {
                 }
 
                 let that = this;
-                this.apiRequest('POST', '/api/appuser/socialLogin', data).then(result => {
+                this.apiRequest('POST', 'appuser/socialLogin', data).then(result => {
 
                     if (result && result['access-token']) {
 
@@ -361,7 +361,7 @@ export class NgxAppkeyWebauthnService {
                     return
                 }
                 let that = this;
-                this.apiRequest('POST', '/api/appuser/socialSignup', data).then(result => {
+                this.apiRequest('POST', 'appuser/socialSignup', data).then(result => {
                     if (result && result['access-token']) {
 
                         that.user = result;
@@ -392,7 +392,7 @@ export class NgxAppkeyWebauthnService {
                     return
                 }
                 data.handle = data.handle.toLowerCase();
-                this.apiRequest('POST', '/api/appuser/verify', data).then(result => {
+                this.apiRequest('POST', 'appuser/verify', data).then(result => {
                     if (result.code) reject(result);
                     else {
 
@@ -443,7 +443,7 @@ export class NgxAppkeyWebauthnService {
 
                 assertion.handle = handle.toLowerCase();
                 let that = this;
-                this.apiRequest('POST', '/api/appuser/verifyComplete', assertion).then(result => {
+                this.apiRequest('POST', 'appuser/verifyComplete', assertion).then(result => {
                     if (result && result['access-token']) {
                         that.user = result;
                         resolve(result);
@@ -474,7 +474,7 @@ export class NgxAppkeyWebauthnService {
                     return
                 }
                 let that = this;
-                this.apiRequest('POST', '/api/appuser/verifySocialAccount', data).then(result => {
+                this.apiRequest('POST', 'appuser/verifySocialAccount', data).then(result => {
                     if (result && result['access-token']) {
                         that.user = result;
                         resolve(result);
@@ -501,7 +501,7 @@ export class NgxAppkeyWebauthnService {
     getAppUser() {
         return new Promise((resolve, reject) => {
             try {
-                this.apiRequest('GET', '/api/appuser/user').then(result => {
+                this.apiRequest('GET', 'appuser/user').then(result => {
 
                     if (result.code) reject(result);
                     else {
@@ -533,7 +533,7 @@ export class NgxAppkeyWebauthnService {
                     return
                 }
 
-                this.apiRequest('POST', '/api/appuser/setLocale', data).then(result => {
+                this.apiRequest('POST', 'appuser/setLocale', data).then(result => {
                     if (result == true) resolve(result);
                     else reject(result);
                 }).catch((error) => reject(error));
@@ -560,7 +560,7 @@ export class NgxAppkeyWebauthnService {
                 }
 
 
-                this.apiRequest('POST', '/api/appuser/updateProfile', data).then(result => {
+                this.apiRequest('POST', 'appuser/updateProfile', data).then(result => {
                     if (result.code) resolve(result);
                     else reject(result);
                 }).catch((error) => reject(error));
@@ -586,7 +586,7 @@ export class NgxAppkeyWebauthnService {
 
                 data.userName = data.userName.toLowerCase();
 
-                this.apiRequest('POST', '/api/appuser/setUserName', data).then(result => {
+                this.apiRequest('POST', 'appuser/setUserName', data).then(result => {
                     if (result.code) reject(result);
                     else resolve(result);
                 }).catch((error) => reject(error));
@@ -614,7 +614,7 @@ export class NgxAppkeyWebauthnService {
 
                 data.userName = data.userName.toLowerCase();
 
-                this.apiRequest('GET', `/api/appuser/userNameAvailable?userName=${data.userName}`).then(result => {
+                this.apiRequest('GET', `appuser/userNameAvailable?userName=${data.userName}`).then(result => {
                     if (result.code) reject(result);
                     else resolve(result);
                 }).catch((error) => reject(error));
@@ -634,7 +634,7 @@ export class NgxAppkeyWebauthnService {
         return new Promise((resolve, reject) => {
             try {
 
-                this.apiRequest('POST', '/api/appuser/deleteAccount', {}).then(result => {
+                this.apiRequest('POST', 'appuser/deleteAccount', {}).then(result => {
                     if (result.code) reject(result);
                     else resolve(result);
                 }).catch((error) => reject(error));
