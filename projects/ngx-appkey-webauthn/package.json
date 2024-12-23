@@ -1,12 +1,27 @@
 {
   "name": "ngx-appkey-webauthn",
-  "version": "0.0.5",
+  "version": "0.0.6",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cosync/AppKey-WebAuthn-Angular.git"
+  },
+  "keywords": [
+    "AppKey",
+    "Passkey",
+    "Authentication"
+  ],
+  "author": "Cosync Inc",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Cosync/AppKey-WebAuthn-Angular/issues"
+  },
+  "homepage": "https://github.com/Cosync/AppKey-WebAuthn-Angular#readme",
   "peerDependencies": {
     "@angular/common": "^18.2.0",
     "@angular/core": "^18.2.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
-  },
-  "sideEffects": false
+  }
 }
