@@ -11,11 +11,7 @@ export class NgxAppkeyWebauthnService {
 
     public localeList: Array<any> = localeData.list;
     public appLocales: Array<any> = [];
-    public user: User = new User()
-    
-    public signupToken: String = ""
-
-    private signupData: any = {}
+    public user: User = new User() 
     private apiConfig: any = {}
 
     constructor() {
@@ -105,7 +101,7 @@ export class NgxAppkeyWebauthnService {
                     reject({ message: "Invalid data" })
                     return
                 } 
-                
+
                 this.apiRequest('POST', 'appuser/loginAnonymousComplete', attestation).then(result => {
                     if (result.code) reject(result);
                     else {
@@ -199,8 +195,7 @@ export class NgxAppkeyWebauthnService {
 
                 this.apiRequest('POST', 'appuser/signupConfirm', attestation).then(result => {
                     if (result.code) reject(result);
-                    else {
-                        this.signupData = result;
+                    else { 
                         resolve(result);
                     }
                 }).catch((error) => reject(error));
@@ -229,11 +224,11 @@ export class NgxAppkeyWebauthnService {
                     return
                 }
 
-                this.apiRequest('POST', 'appuser/signupComplete', { code: data.code }).then(result => {
+                this.apiRequest('POST', 'appuser/signupComplete', data).then(result => {
                     if (result.code) reject(result);
                     else {
                         this.user = result;
-                        this.signupData = {};
+                        
                         resolve(result);
                     }
                 }).catch((error) => reject(error));
@@ -259,6 +254,7 @@ export class NgxAppkeyWebauthnService {
                     reject({ message: "invalid login data" })
                     return
                 }
+                
                 data.handle = data.handle.toLowerCase();
                 this.apiRequest('POST', 'appuser/login', data).then(result => {
                     if (result.code) reject(result);
@@ -663,10 +659,9 @@ export class NgxAppkeyWebauthnService {
     private async apiRequest(method: string, endpoint: string, data?: any): Promise<any> {
         try {
             if (!this.apiConfig.appToken) {
+                console.log("apiRequest this.apiConfig ", this.apiConfig);
                 throw ("invalid api config for app token")
-            }
-
-            console.log("apiRequest this.apiConfig ", this.apiConfig);
+            } 
 
             let options: any = {
                 method: method ? method : 'POST',
@@ -676,10 +671,10 @@ export class NgxAppkeyWebauthnService {
             };
 
             if (this.user && this.user.accessToken != "") options.headers['access-token'] = this.user.accessToken;
-            else if (this.signupData && this.signupData['signup-token'] != undefined) options.headers['signup-token'] = this.signupToken;
+            else if (data && data.signupToken) options.headers['signup-token'] = data.signupToken;
             else options.headers['app-token'] = this.apiConfig.appToken
 
-            if (method == "POST" || method == "PUT") options.body = JSON.stringify(data);
+            if (data && method == "POST" || method == "PUT") options.body = JSON.stringify(data);
 
             const response = await fetch(`${this.apiConfig.apiUrl}/api/${endpoint}`, options);
             let result = await response.json();
