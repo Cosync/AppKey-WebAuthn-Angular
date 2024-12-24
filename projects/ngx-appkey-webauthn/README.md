@@ -417,13 +417,17 @@ Atttestation Object Properties:
 
 The *sociallogin()* function is used to login into a user's account using a social login provider. Currently AppKey Server supports both 'apple' and 'google' as social login providers. If the social login is successful it will return a user object to the caller that is the same as loginComplete function.
 
-To utilize this socialLogin feature, first ensure you enable and set it up in your AppKey application at appkey.io for Apple and/or Google.
+To use the socialLogin feature, first make sure to enable and configure it in your AppKey application at appkey.io for Apple and/or Google. Next, incorporate any Apple and/or Google social login library into your project; refer to our demo projects for guidance on implementing this social login feature at:
+
+1, https://github.com/Cosync/AppKey-WebReactDemo
+2, https://github.com/Cosync/AppKey-ReactNativeDemo
+3, https://github.com/Cosync/AppKey-ReactExpoDemo
 
 * **jwt**: the JWT token of the logged in user
 * **accessToken**: the access token of the logged in user
 
 ```
-    await appKeyAuth.auth.socialLogin({token: String, provider: String})
+    await appKeyAuth.socialLogin({token: String, provider: String})
 ```
 
 If an error occurs in the call to the function, a CosyncAuthError exceptions will be thrown.
@@ -439,7 +443,7 @@ An object contains:
 
 ```
     try {
-        await appKeyAuth.auth.socialLogin({token:"apple_auth_token", provider:"apple"})
+        await appKeyAuth.socialLogin({token:"apple_auth_token", provider:"apple"})
     } catch (error) {
          
     }
@@ -461,7 +465,7 @@ This function can be passed an optional locale parameter, which specifies the us
 To utilize this socialLogin feature, first ensure you enable and set it up in your AppKey application at appkey.io for Apple and/or Google.
 
 ```
-await appKeyAuth.auth.socialSignup({token: String, provider: String, handle:string, locale:string})
+await appKeyAuth.socialSignup({token: String, provider: String, handle:string, locale:string})
      
 ``` 
  
@@ -481,7 +485,7 @@ An object contains:
 ### Example
 
 ```
-    await appKeyAuth.auth.socialLogin({token: String, provider: String, handle:String, locale:String})
+    await appKeyAuth.socialLogin({token: String, provider: String, handle:String, locale:String})
 ```
 
 
