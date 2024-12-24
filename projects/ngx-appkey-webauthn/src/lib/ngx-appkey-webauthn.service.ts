@@ -12,7 +12,7 @@ export class NgxAppkeyWebauthnService {
     public localeList: Array<any> = localeData.list;
     public appLocales: Array<any> = [];
     public user: User = new User()
-    public application: Application = new Application()
+    
     public signupToken: String = ""
 
     private signupData: any = {}
@@ -44,22 +44,30 @@ export class NgxAppkeyWebauthnService {
      * }
      * @returns 
      */
-    async loginAnonymous(data: any): Promise<any> {
+    async loginAnonymous(data: any) {
+        return new Promise((resolve, reject) => {
+            try {
+                let valid = data.handle && data.handle.startsWith("ANON_")
+                if (!valid) {
+                    let error = {
+                        message: "Invalid login anonymous data"
+                    };
+                    reject(error);
+                    return;
+                } 
+              
 
-        try {
-            let valid = data.handle && data.displayName
-            if (!valid) {
-                let error = {
-                    message: "invalid loginAnonymous data"
-                }
-                return error
+                this.apiRequest('POST', 'appuser/loginAnonymous', data).then(result => {
+                    if (result.code) reject(result);
+                    else { 
+                        resolve(result);
+                    }
+                }).catch((error) => reject(error)); 
+
+            } catch (error) {
+                reject( error )
             }
-            data.handle = data.handle.toLowerCase();
-            return this.apiRequest('POST', 'appuser/loginAnonymous', data)
-
-        } catch (error) {
-            return error
-        }
+        })
     }
 
 
@@ -94,12 +102,10 @@ export class NgxAppkeyWebauthnService {
                     attestation.type;
 
                 if (!valid) {
-                    reject({ message: "invalid attestation" })
+                    reject({ message: "Invalid data" })
                     return
-                }
-
-                attestation.handle = handle.toLowerCase();
-
+                } 
+                
                 this.apiRequest('POST', 'appuser/loginAnonymousComplete', attestation).then(result => {
                     if (result.code) reject(result);
                     else {
@@ -126,22 +132,30 @@ export class NgxAppkeyWebauthnService {
       * }
       * @returns 
       */
-    async signup(data: any): Promise<any> {
-
-        try {
-            let valid = data.handle && data.displayName
-            if (!valid) {
-                let error = {
-                    message: "invalid signup data"
+    async signup(data: any) {
+        return new Promise((resolve, reject) => {
+            try {
+                let valid = data.handle && data.displayName
+                if (!valid) {
+                    let error = {
+                        message: "invalid signup data"
+                    }
+                    reject(error)
                 }
-                return error
-            }
-            data.handle = data.handle.toLowerCase();
-            return this.apiRequest('POST', 'appuser/signup', data)
+                data.handle = data.handle.toLowerCase();
+                
 
-        } catch (error) {
-            return error
-        }
+                this.apiRequest('POST', 'appuser/signup', data).then(result => {
+                    if (result.code) reject(result);
+                    else { 
+                        resolve(result);
+                    }
+                }).catch((error) => reject(error)); 
+
+            } catch (error) {
+                reject(error)
+            }
+        })
     }
 
 

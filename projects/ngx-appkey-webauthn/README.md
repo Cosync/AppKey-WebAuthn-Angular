@@ -124,7 +124,7 @@ The *signup()* function is responsible for registering a new user handle (email 
 If an error occurs in the call to the function, a AppKeyError exceptions will be thrown.
 
 ### Parameters
-
+An object contains:
 **handle** : String - this contains the user's handle (email or phone). 
 
 **displayName** : String - this contains the user's display name.
@@ -158,6 +158,21 @@ If an error occurs in the call to the function, a error exceptions will be throw
 
 **atttestationObject** : Attestation - this contains the user's attestation object
 
+``` 
+Atttestation Object Properties: 
+    {
+
+      id: Base64URLString;
+      rawId: Base64URLString;
+      response: {
+          clientDataJSON: Base64URLString;
+          attestationObject: Base64URLString;
+          authenticatorData?: Base64URLString; 
+        };
+      authenticatorAttachment?: string; 
+      type: string;
+    }
+```
 
 To create attestation object please see a SimpleWebAuthn Library at https://github.com/MasterKale/SimpleWebAuthn 
 or see our demo website soruce code at https://github.com/Cosync/AppKey-WebAngularDemo
@@ -223,9 +238,10 @@ If an error occurs in the call to the function, an error exceptions will be thro
 
 
 ### Parameters
-	{
-		handle: String - this contains the user's user name or email. 
-	}
+An object contains: 
+
+**handle** :String - this contains the user's user name or email. 
+ 
 
 ### Example
 
@@ -273,6 +289,23 @@ If an error occurs in the call to the function, an error exception will be throw
 **handle** : String - this contains the user's handle (email or phone). 
 **assertion** : Object - this contains the Assertion object
 
+
+```
+    Assertion Object Properties:
+    {
+        id: Base64URLString;
+        rawId: Base64URLString;
+        response: {
+            clientDataJSON:Base64URLString,
+            authenticatorData:Base64URLString,
+            signature:Base64URLString,
+            userHandle?: Base64URLString
+        };
+        authenticatorAttachment?: string; 
+        type: string;
+    }
+
+```
 To create assertion object please see a SimpleWebAuthn Library at https://github.com/MasterKale/SimpleWebAuthn or see our demo website source code at https://github.com/Cosync/AppKey-WebAngularDemo
 
 ### Example
@@ -352,8 +385,23 @@ If an error occurs in the call to the function, an error exception will be throw
 ### Parameters
 
 **handle** : String - this contains the user's handle (email or phone). 
-**assertion** : Assertion - this contains the Assertion object
+**atttestationObject** : Assertion - this contains the Assertion object
 
+``` 
+Atttestation Object Properties: 
+    {
+
+      id: Base64URLString;
+      rawId: Base64URLString;
+      response: {
+          clientDataJSON: Base64URLString;
+          attestationObject: Base64URLString;
+          authenticatorData?: Base64URLString; 
+        };
+      authenticatorAttachment?: string; 
+      type: string;
+    }
+```
 ### Example
 
 ```
@@ -363,6 +411,80 @@ If an error occurs in the call to the function, an error exception will be throw
          
     }
 ```
+
+
+## socialLogin 
+
+The *sociallogin()* function is used to login into a user's account using a social login provider. Currently AppKey Server supports both 'apple' and 'google' as social login providers. If the social login is successful it will return a user object to the caller that is the same as loginComplete function.
+
+To utilize this socialLogin feature, first ensure you enable and set it up in your AppKey application at appkey.io for Apple and/or Google.
+
+* **jwt**: the JWT token of the logged in user
+* **accessToken**: the access token of the logged in user
+
+```
+    await appKeyAuth.auth.socialLogin({token: String, provider: String})
+```
+
+If an error occurs in the call to the function, a CosyncAuthError exceptions will be thrown.
+
+
+### Parameters
+An object contains:
+**token** : String - this is the login token returned by the provider
+
+**provider** : String - this contains the social provider either 'apple' or 'google'
+
+### Example
+
+```
+    try {
+        await appKeyAuth.auth.socialLogin({token:"apple_auth_token", provider:"apple"})
+    } catch (error) {
+         
+    }
+
+    
+```
+
+## socialSignup
+
+The *socialSignup()* function is used to signup a user with a AppKey server using a social provider. 
+
+
+This function will sign up a user to the AppKey service using a social account `token``. Currently, the AppKey system supports both Apple Id and Google social login protocols. This function receives the social token from the social login provider and a provider string that specifies the social provider (for instance, ‘apple’ or ‘google’).
+
+If successful, this function will return a user object for the newly signed up user. The **socialSignup** function will not succeed if a user email account has previously been established for the ’email’ provider or if an account with an alternative social provider already exists for the same email. 
+
+This function can be passed an optional locale parameter, which specifies the user’s locale.
+
+To utilize this socialLogin feature, first ensure you enable and set it up in your AppKey application at appkey.io for Apple and/or Google.
+
+```
+await appKeyAuth.auth.socialSignup({token: String, provider: String, handle:string, locale:string})
+     
+``` 
+ 
+
+### Parameters
+An object contains:
+
+**token** : String - this is the login token returned by the provider
+
+**provider** : String - this contains the social provider either 'apple' or 'google'
+
+**handle** : String - this contains the user's email (Apple Id or Google account)  
+
+**locale** : String - 2 letter **locale** for the user
+
+
+### Example
+
+```
+    await appKeyAuth.auth.socialLogin({token: String, provider: String, handle:String, locale:String})
+```
+
+
 
 ## verify
 
