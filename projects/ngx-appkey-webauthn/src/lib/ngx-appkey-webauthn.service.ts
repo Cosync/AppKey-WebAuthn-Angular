@@ -654,6 +654,120 @@ export class NgxAppkeyWebauthnService {
         })
     }
 
+    /**
+     *
+     *
+     * @returns challenge
+     */
+    addPasskey() {
+        return new Promise((resolve, reject) => {
+            try {
+                this.apiRequest('POST', 'appuser/addPasskey', {}).then(result => {
+                    if (result.code)
+                        reject(result);
+                    else
+                        resolve(result);
+                }).catch((error) => reject(error));
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+   
+    
+
+    /**
+     * https://w3c.github.io/webauthn/#dictdef-registrationresponsejson
+     * @param 
+     *  {
+     * 
+     *  id: Base64URLString;
+     *  rawId: Base64URLString;
+     *  response: {
+     *      clientDataJSON: Base64URLString;
+     *      attestationObject: Base64URLString;
+     *      authenticatorData?: Base64URLString; 
+     *    };
+     *  authenticatorAttachment?: string; 
+     *  type: string;
+     * } attestation 
+     * @returns 
+     */
+    addPasskeyComplete(attestation:any) {
+        return new Promise((resolve, reject) => {
+            try {
+                let valid = attestation.id &&
+                    attestation.rawId &&
+                    attestation.response &&
+                    attestation.response.clientDataJSON &&
+                    attestation.response.attestationObject &&
+                    attestation.type;
+
+                if (!valid) {
+                    reject({ message: "invalid attestation" })
+                    return
+                } 
+
+                this.apiRequest('POST', 'appuser/addPasskeyComplete', attestation).then(result => {
+                    if (result.code)
+                        reject(result);
+                    else {
+                        this.user = result;
+                        resolve(result);
+                    }
+                }).catch((error) => reject(error));
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+    /**
+    *
+    * @param {keyId:string, keyName:string} data
+    * @returns user
+    */
+    updatePasskey(data:any) {
+        return new Promise((resolve, reject) => {
+            try {
+                this.apiRequest('POST', 'appuser/updatePasskey', data).then(result => {
+                    if (result.code)
+                        reject(result);
+                    else {
+                        this.user = result;
+                        resolve(result);
+                    }
+                }).catch((error) => reject(error));
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+    /**
+    *
+    * @param {keyId:string} data
+    * @returns user
+    */
+    removePasskey(data:any) {
+        return new Promise((resolve, reject) => {
+            try {
+                this.apiRequest('POST', 'appuser/removePasskey', data).then(result => {
+                    if (result.code)
+                        reject(result);
+                    else {
+                        this.user = result;
+                        resolve(result);
+                    }
+                }).catch((error) => reject(error));
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
+    }
+
 
 
     private async apiRequest(method: string, endpoint: string, data?: any): Promise<any> {
@@ -670,7 +784,7 @@ export class NgxAppkeyWebauthnService {
                 }
             };
 
-            if (this.user && this.user.accessToken != "") options.headers['access-token'] = this.user.accessToken;
+            if (this.user && this.user['access-token'] != "") options.headers['access-token'] = this.user['access-token'];
             else if (data && data.signupToken) options.headers['signup-token'] = data.signupToken;
             else options.headers['app-token'] = this.apiConfig.appToken
 

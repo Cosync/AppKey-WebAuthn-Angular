@@ -270,9 +270,9 @@ The AppUser object contains the following fields
 * **handle** : String - user handle (email or phone)
 * **status** : String - user status 'pending', 'active', 'suspended'
 * **appId** : String - unique 128 bit application id
-* **accessToken** : String? - JWT REST access token for logged in user
-* **signUpToken** : String? - JWT REST sign up token
+* **access-token** : String? - JWT REST access token for logged in user
 * **jwt** : String? - JWT login token
+* **authenticators** : Array<any> - a list of passkey authenticator
 * **userName** : String? - unique user name (alphanumeric)
 * **locale** : String? - current user locale
 * **loginProvider** :  String - login type
@@ -419,9 +419,9 @@ The *sociallogin()* function is used to login into a user's account using a soci
 
 To use the socialLogin feature, first make sure to enable and configure it in your AppKey application at appkey.io for Apple and/or Google. Next, incorporate any Apple and/or Google social login library into your project; refer to our demo projects for guidance on implementing this social login feature at:
 
-1, https://github.com/Cosync/AppKey-WebReactDemo
-2, https://github.com/Cosync/AppKey-ReactNativeDemo
-3, https://github.com/Cosync/AppKey-ReactExpoDemo
+1. https://github.com/Cosync/AppKey-WebReactDemo
+2. https://github.com/Cosync/AppKey-ReactNativeDemo
+3. https://github.com/Cosync/AppKey-ReactExpoDemo
 
 * **jwt**: the JWT token of the logged in user
 * **accessToken**: the access token of the logged in user
@@ -637,6 +637,171 @@ If an error occurs in the call to the function, a AppKeyError exceptions will be
     try {
         let isAvailable = await appKeyAuth.userNameAvailable({userName:'appuserdemo'})
         if isAvailable {
+            ...
+        }
+    } catch (error) {
+        
+    }
+```
+
+
+## addPasskey
+
+The *addPasskey()* function starts the process of adding a passkey to an existing account. You may have already registered a passkey on one device (e.g., an iPhone running iOS) but now want to set one up on another device (e.g., an Android phone or an iOS device linked to a different Apple ID). The Add Passkey function lets you do exactly that. AppKey supports multiple passkeys per user account. Typically, you’d authenticate on the second device by scanning a FIDO2 QR code with the first device, since the second device doesn’t yet have a passkey. Once authenticated, you can then call Add Passkey on the second device to register a new passkey in its keychain—still using the first device as the trusted authenticator.
+
+To use Add Passkey, the user must be logged in and have a valid access token by calling verify and verifyComplete function.
+ 
+The Add Passkey process consists of two REST API calls:
+
+```
+    await appKeyAuth.addPasskey()
+    await appKeyAuth.addPasskeyComplete(attest)
+    
+```
+This fuction returns **attestation challenge** similar to signup process.
+
+If an error occurs in the call to the function, a AppKeyError exceptions will be thrown.
+
+### Parameters
+
+
+### Example
+
+```
+    try {
+        let addKeyChallenge = await appKeyAuth.addPasskey()
+        if addKeyChallenge.challenge {
+            ...
+        }
+    } catch (error) {
+        
+    }
+```
+
+
+
+## addPasskeyComplete
+
+The addPasskeyComplete function finalizes the add passkey process after the passkey has been successfully created on the user’s device. This involves sending the FIDO2 attestation credentials to the AppKey server to confirm the new passkey.
+ 
+
+``` 
+    await appKeyAuth.addPasskeyComplete(atttestationObject)
+    
+```
+This fuction returns **user object ** similar to signupConfirm process.
+
+If an error occurs in the call to the function, a AppKeyError exceptions will be thrown.
+
+
+### Parameters 
+
+**atttestationObject** : Attestation - this contains the user's attestation object
+
+``` 
+Atttestation Object Properties: 
+    {
+
+      id: Base64URLString;
+      rawId: Base64URLString;
+      response: {
+          clientDataJSON: Base64URLString;
+          attestationObject: Base64URLString;
+          authenticatorData?: Base64URLString; 
+        };
+      authenticatorAttachment?: string; 
+      type: string;
+    }
+```
+
+### Example
+
+```
+    try {
+        let result = await appKeyAuth.addPasskeyComplete(atttestationObject)
+        if result.jwt {
+            ...
+        }
+    } catch (error) {
+        
+    }
+```
+
+ 
+
+## updatePasskey
+
+The updatePasskey REST call allows a user to rename a passkey associated with their account. Since users can have multiple passkeys stored on different device keychains, assigning distinct names helps differentiate them for easier identification and management.
+
+To use Add Passkey, the user must be logged in and have a valid access token by calling verify and verifyComplete function.
+ 
+
+```
+    await appKeyAuth.updatePasskey(keyData) 
+```
+This fuction returns **user object**.
+
+If an error occurs in the call to the function, a AppKeyError exceptions will be thrown.
+
+### Parameters
+
+
+``` 
+keyData Properties: 
+    {
+
+      keyId: String;
+      keyName: String;
+      
+    }
+```
+
+### Example
+
+```
+    try {
+        let result = await appKeyAuth.updatePasskey(keyData)
+        if result.authenticators {
+            ...
+        }
+    } catch (error) {
+        
+    }
+```
+
+
+
+## removePasskey
+
+The removePasskey REST call deletes a passkey from the logged-in user’s account. Use this function with caution, as removing all passkeys could leave the user locked out of their account.
+
+To use Add Passkey, the user must be logged in and have a valid access token by calling verify and verifyComplete function.
+ 
+
+```
+    await appKeyAuth.removePasskey(keyData) 
+```
+This fuction returns **user object**.
+
+If an error occurs in the call to the function, a AppKeyError exceptions will be thrown.
+
+### Parameters
+
+
+``` 
+keyData Properties: 
+    {
+
+      keyId: String; 
+    }
+```
+
+### Example
+
+```
+    try {
+        let result = await appKeyAuth.removePasskey(keyData)
+        if result.authenticators {
             ...
         }
     } catch (error) {
