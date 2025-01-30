@@ -1,6 +1,6 @@
 {
   "name": "ngx-appkey-webauthn",
-  "version": "0.0.10",
+  "version": "0.0.13",
   "sideEffects": false,
   "repository": {
     "type": "git",

@@ -254,7 +254,9 @@ export class NgxAppkeyWebauthnService {
                     reject({ message: "invalid login data" })
                     return
                 }
-                
+
+                this.logout()
+
                 data.handle = data.handle.toLowerCase();
                 this.apiRequest('POST', 'appuser/login', data).then(result => {
                     if (result.code) reject(result);
@@ -370,6 +372,8 @@ export class NgxAppkeyWebauthnService {
                     reject({ message: "invalid data" })
                     return
                 }
+                this.logout()
+                
                 let that = this;
                 this.apiRequest('POST', 'appuser/socialSignup', data).then(result => {
                     if (result && result['access-token']) {
@@ -659,10 +663,10 @@ export class NgxAppkeyWebauthnService {
      *
      * @returns challenge
      */
-    addPasskey() {
+    addPasskey(data:any = {}) {
         return new Promise((resolve, reject) => {
             try {
-                this.apiRequest('POST', 'appuser/addPasskey', {}).then(result => {
+                this.apiRequest('POST', 'appuser/addPasskey', data).then(result => {
                     if (result.code)
                         reject(result);
                     else
@@ -785,6 +789,7 @@ export class NgxAppkeyWebauthnService {
             };
 
             if (this.user && this.user['access-token'] != "") options.headers['access-token'] = this.user['access-token'];
+            else if (data && data['access-token']) options.headers['access-token'] = data['access-token'];
             else if (data && data.signupToken) options.headers['signup-token'] = data.signupToken;
             else options.headers['app-token'] = this.apiConfig.appToken
 
@@ -795,13 +800,15 @@ export class NgxAppkeyWebauthnService {
 
             console.log(`apiRequest path: ${endpoint} - result: `, result)
 
-            if (response.status !== 200) return { error: result }
-            else return result
+            // if (response.status !== 200) return { error: result }
+            // else return result
+
+            return result;
 
         } catch (error) {
 
             console.log(`apiRequest error:`, error)
-            return { error: error }
+            return error;
         }
     }
 
