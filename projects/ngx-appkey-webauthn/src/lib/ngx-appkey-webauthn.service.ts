@@ -35,7 +35,8 @@ export class NgxAppkeyWebauthnService {
      * 
      * @param {
      *   handle :string,
-     *   displayName :string,
+     *   firstName :string,
+     *   lastName :string,
      *   locale? :string
      * }
      * @returns 
@@ -123,7 +124,8 @@ export class NgxAppkeyWebauthnService {
      * 
      * @param {
       *   handle :string,
-      *   displayName :string,
+      *   firstName? :string,
+      *   lastName? :string,
       *   locale? :string
       * }
       * @returns 
@@ -131,7 +133,7 @@ export class NgxAppkeyWebauthnService {
     async signup(data: any) {
         return new Promise((resolve, reject) => {
             try {
-                let valid = data.handle && data.displayName
+                let valid = data.handle && data.firstName && data.lastName
                 if (!valid) {
                     let error = {
                         message: "invalid signup data"
@@ -360,14 +362,14 @@ export class NgxAppkeyWebauthnService {
 
     /**
     * 
-    * @param {token:string, provider:string, handle:string} data 
+    * @param {token:string, provider:string, handle:string, firstName:string, lastName:string} data 
     * 
     * @returns 
     */
     socialSignup(data: any) {
         return new Promise((resolve, reject) => {
             try {
-                let valid = data.token && data.provider && data.handle;
+                let valid = data.token && data.provider && data.handle && data.firstName && data.lastName;
                 if (!valid) {
                     reject({ message: "invalid data" })
                     return
@@ -561,13 +563,13 @@ export class NgxAppkeyWebauthnService {
 
     /**
      * 
-     * @param {displayName:string} data 
+     * @param {firstName:string, lastName:string} data 
      * @returns  
      */
     updateProfile(data: any) {
         return new Promise((resolve, reject) => {
             try {
-                let valid = data.displayName;
+                let valid = data.firstName && data.lastName;
                 if (!valid) {
                     reject({ message: "invalid data" })
                     return

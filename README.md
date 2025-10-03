@@ -82,7 +82,7 @@ The Application object contains the following fields
 * **appleBundleId** : String - Apple application bundle id and Application Web Service Id
 * **googleClientId** : String - Google Client ID for iOS and Google Client ID for Web
 * **relyPartyId** : String - domain url for Passkey WebAuthn
-* **userJWTExpiration** : Int - JWT token expirations in hours
+* **userJWTExpiration** : Int - idToken and JWT token expirations in hours
 * **locales** : [String] - list of locales support by application
 
 ```
@@ -113,7 +113,7 @@ The *signup()* function is used to signup a user with a AppKey application. The 
 * **signupConfirm**
 * **signupComplete**
 
-The *signup()* function is responsible for registering a new user handle (email or phone) with the application. This handle must be unique to the user and not already assigned to another account. The client must also provide a display name (first and last) and can optionally include a locale (default is ‘EN’ if unspecified). The *signup()* function returns an *SignupChallenge* object, which contains a challenge to be signed by the private key generated on the client side. 
+The *signup()* function is responsible for registering a new user handle (email or phone) with the application. This handle must be unique to the user and not already assigned to another account. The client must also provide a first name, last name and can optionally include a locale (default is ‘EN’ if unspecified). The *signup()* function returns an *SignupChallenge* object, which contains a challenge to be signed by the private key generated on the client side. 
 
  
 
@@ -127,8 +127,8 @@ If an error occurs in the call to the function, a AppKeyError exceptions will be
 An object contains:
 **handle** : String - this contains the user's handle (email or phone). 
 
-**displayName** : String - this contains the user's display name.
-
+**firstName** : String - this contains the user's first name.
+**firstName** : String - this contains the user's last name.
 **locale** : String - 2 letter **locale** for the user
 
 ### Example
@@ -266,12 +266,14 @@ If the *loginComplete()* is successful it will return to the caller, the login c
 The AppUser object contains the following fields
 
 * **appUserId** : String - unique 128 bit user id
-* **displayName** : String - user display name
+* **firstName** : String - user first name
+* **lastName** : String - user last name
 * **handle** : String - user handle (email or phone)
 * **status** : String - user status 'pending', 'active', 'suspended'
 * **appId** : String - unique 128 bit application id
 * **access-token** : String? - JWT REST access token for logged in user 
 * **jwt** : String? - JWT login token
+* **idToken** : String? - id token for OpenID Connect authenticaiton login token
 * **authenticators** : Array<any> - a list of passkey authenticator
 * **userName** : String? - unique user name (alphanumeric)
 * **locale** : String? - current user locale
@@ -362,17 +364,20 @@ If the *loginAnonymousComplete()* is successful it will return to the caller, th
 * **appUser** : AppUser - application user object
 * **accessToken** : String? - JWT REST access token for logged in user
 * **jwt** : String? - JWT login token
+* **idToken** : String? - id token for Open ID token authentication tool
 
 The AppUser object contains the following fields
 
 * **appUserId** : String - unique 128 bit user id
-* **displayName** : String - user display name
+* **firstName** : String - user first name
+* **lastName** : String - user last name
 * **handle** : String - user handle (email or phone)
 * **status** : String - user status 'pending', 'active', 'suspended'
 * **appId** : String - unique 128 bit application id
 * **accessToken** : String? - JWT REST access token for logged in user
 * **signUpToken** : String? - JWT REST sign up token
 * **jwt** : String? - JWT login token
+* **idToken** : String? - id token for Open ID token authentication tool
 * **userName** : String? - unique user name (alphanumeric)
 * **locale** : String? - current user locale
 * **lastLogin** :  String? - date stamp of last login
@@ -425,7 +430,7 @@ To use the socialLogin feature, first make sure to enable and configure it in yo
 
 * **jwt**: the JWT token of the logged in user
 * **accessToken**: the access token of the logged in user
-
+* **idToken** : String? - id token for Open ID token authentication tool
 ```
     await appKeyAuth.socialLogin({token: String, provider: String})
 ```
